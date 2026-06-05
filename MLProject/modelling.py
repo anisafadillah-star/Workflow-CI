@@ -8,7 +8,9 @@ from sklearn.linear_model import LogisticRegression
 if __name__ == "__main__":
     mlflow.autolog()
 
-    df = pd.read_csv("namadataset_preprocessing/dataset_clean.csv")
+    df = pd.read_csv("namadataset_preprocessing/heart_preprocesing.csv")
+    
+    # Memisahkan Fitur dan Target (pastikan kolom 'target' ada di file heart.csv kamu)
     X = df.drop(columns=['target'])
     y = df['target']
 
