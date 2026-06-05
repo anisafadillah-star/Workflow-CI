@@ -1,0 +1,8 @@
+```yaml
+        name: Logistic_Regression_Project
+
+        conda_env: conda.yaml
+
+        entry_points:
+          main:
+            command: "python modelling.py"
