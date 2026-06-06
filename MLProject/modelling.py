@@ -1,24 +1,32 @@
+import os
 import pandas as pd
 import numpy as np
 import mlflow
 import mlflow.sklearn
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 
-if __name__ == "__main__":
-    mlflow.autolog()
+if os.path.exists("heart_preprocesing.csv"):
+    DATA_PATH = "heart_preprocesing.csv"
+elif os.path.exists("namadataset_preprocessing/heart_preprocesing.csv"):
+    DATA_PATH = "namadataset_preprocessing/heart_preprocesing.csv"
+else:
+    raise FileNotFoundError("Dataset heart_preprocesing.csv tidak ditemukan di folder mana pun!")
 
-    df = pd.read_csv("namadataset_preprocessing/heart_preprocesing.csv")
-    
-    # Memisahkan Fitur dan Target (pastikan kolom 'target' ada di file heart.csv kamu)
-    X = df.drop(columns=['target'])
-    y = df['target']
+df = pd.read_csv(DATA_PATH)
+X = df.drop(columns=['target'])
+y = df['target']
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    with mlflow.start_run():
-        model = LogisticRegression(max_iter=1000)
-        model.fit(X_train, y_train.values.ravel())
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
 
-        accuracy = model.score(X_test, y_test)
-        print(f"Retraining Berhasil! Akurasi Model Baru: {accuracy:.4f}")
+with mlflow.start_run():
+    model = LogisticRegression(max_iter=1000)
+    model.fit(X_train, y_train.values.ravel())
+
+    accuracy = model.score(X_test, y_test.values.ravel())
+    print(f"Training Selesai Berhasil! Akurasi Model: {accuracy:.4f}")
