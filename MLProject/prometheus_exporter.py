@@ -1,4 +1,4 @@
-from prometheus_client import start_http_server, Counter
+from prometheus_client import start_http_server, Counter, Gauge
 import time
 
 REQUEST_COUNT = Counter(
@@ -6,9 +6,21 @@ REQUEST_COUNT = Counter(
     'Total prediction requests'
 )
 
-if __name__ == "__main__":
-    start_http_server(8000)
+MODEL_ACCURACY = Gauge(
+    'model_accuracy',
+    'Current model accuracy'
+)
 
-    while True:
-        REQUEST_COUNT.inc()
-        time.sleep(5)
+CPU_USAGE = Gauge(
+    'cpu_usage_percent',
+    'CPU Usage'
+)
+
+start_http_server(8000)
+
+while True:
+    REQUEST_COUNT.inc()
+    MODEL_ACCURACY.set(0.78)
+    CPU_USAGE.set(50)
+
+    time.sleep(5)
