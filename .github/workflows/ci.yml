@@ -8,9 +8,10 @@ on:
 
 jobs:
   build:
-    runs-down: ubuntu-latest
+    runs-on: ubuntu-latest # Sudah diperbaiki dari runs-down menjadi runs-on
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
@@ -24,7 +25,8 @@ jobs:
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        # Mengantisipasi jika file requirements.txt belum Anda buat di repositori
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         pip install Flask prometheus_client requests pandas scikit-learn
 
     - name: Run Verification
