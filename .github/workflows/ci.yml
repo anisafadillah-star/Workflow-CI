@@ -9,6 +9,7 @@ jobs:
 build:
 runs-on: ubuntu-latest
 
+```
 steps:
   - name: Checkout Code
     uses: actions/checkout@v4
@@ -29,3 +30,4 @@ steps:
   - name: Run Training
     run: |
       python MLProject/modelling.py
+```
