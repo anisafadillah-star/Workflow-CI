@@ -3,23 +3,16 @@ import mlflow.sklearn
 import pandas as pd
 
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 
-mlflow.set_tracking_uri("sqlite:///mlflow.db")
-
-# Nama experiment
-mlflow.set_experiment("Heart_Disease")
-
-# Aktifkan autolog
 mlflow.sklearn.autolog()
 
-# Load dataset
 df = pd.read_csv("heart_preprocessing.csv")
 
-X = df.drop("target", axis=1)
+X = df.drop(columns=["target"])
 y = df["target"]
 
-# Split data
 X_train, X_test, y_train, y_test = train_test_split(
     X,
     y,
@@ -27,13 +20,15 @@ X_train, X_test, y_train, y_test = train_test_split(
     random_state=42
 )
 
-# Training model
-with mlflow.start_run():
+scaler = StandardScaler()
 
-    model = LogisticRegression(max_iter=1000)
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
 
-    model.fit(X_train, y_train)
+model = LogisticRegression(max_iter=1000)
 
-    accuracy = model.score(X_test, y_test)
+model.fit(X_train, y_train)
 
-    print("Accuracy :", accuracy)
+accuracy = model.score(X_test, y_test)
+
+print("Accuracy:", accuracy)
