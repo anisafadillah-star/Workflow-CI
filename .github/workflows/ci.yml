@@ -1,4 +1,4 @@
-name: Machine Learning Pipeline CI
+name: CI
 
 on:
   push:
@@ -13,7 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-      # PERBAIKAN UTAMA: Mengizinkan MLflow menyimpan tracking data di folder lokal server
       MLFLOW_ALLOW_FILE_STORE: true 
 
     steps:
@@ -23,30 +22,14 @@ jobs:
     - name: Setup Python
       uses: actions/setup-python@v5
       with:
-        python-version: "3.10"
+        python-version: "3.12"
 
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install mlflow pandas scikit-learn joblib Flask prometheus_client requests
+        pip install numpy pandas matplotlib scikit-learn joblib mlflow
 
-    - name: Fix Missing Dataset (Create Dummy CSV)
+    - name: Run MLflow Project
       run: |
-        python -c "
-        import pandas as pd
-        import numpy as np
-        columns = ['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal', 'target']
-        data = np.random.randint(0, 2, size=(10, len(columns)))
-        df = pd.DataFrame(data, columns=columns)
-        df.to_csv('heart_preprocesing.csv', index=False)
-        print('Dataset tiruan berhasil dibuat!')
-        "
-
-    - name: Verify Python File
-      run: |
-        python -m py_compile MLProject/modelling.py
-
-    - name: Run Training Script
-      run: |
-        # PERBAIKAN KEDUA: Eksekusi langsung script Python Anda (Bukan lewat mlflow run)
-        python MLProject/modelling.py
+        cd MLproject
+        mlflow run . --env-manager=local
