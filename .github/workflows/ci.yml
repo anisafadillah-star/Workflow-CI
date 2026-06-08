@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      # PERBAIKAN UTAMA: Mengizinkan MLflow menyimpan tracking data di folder lokal server
+      MLFLOW_ALLOW_FILE_STORE: true 
 
     steps:
     - name: Checkout Code
@@ -46,4 +48,5 @@ jobs:
 
     - name: Run Training Script
       run: |
+        # PERBAIKAN KEDUA: Eksekusi langsung script Python Anda (Bukan lewat mlflow run)
         python MLProject/modelling.py
