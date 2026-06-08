@@ -1,7 +1,6 @@
 import os
 import sys
 import warnings
-from pathlib import Path
 import pandas as pd
 import numpy as np
 import mlflow
@@ -15,28 +14,18 @@ if __name__ == "__main__":
     warnings.filterwarnings("ignore")
     np.random.seed(42)
 
-    default_filename = "heart_preprocesing.csv"
-    file_path = default_filename
+    file_path = "heart_preprocesing.csv"
 
     if len(sys.argv) > 1:
         file_path = sys.argv[-1]
 
     if not os.path.exists(file_path):
-        alternative_path = Path(__file__).resolve().parent / default_filename
-        if alternative_path.exists():
-            file_path = str(alternative_path)
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        alternative_path = os.path.join(script_dir, "heart_preprocesing.csv")
+        if os.path.exists(alternative_path):
+            file_path = alternative_path
 
     if not os.path.exists(file_path):
-        alternative_path = Path.cwd() / default_filename
-        if alternative_path.exists():
-            file_path = str(alternative_path)
-
-    print(f"==================================================")
-    print(f"Mencoba memuat dataset dari: {file_path}")
-    print(f"==================================================")
-
-    if not os.path.exists(file_path):
-        print(f"Error Fatal: File '{file_path}' tidak ditemukan!")
         sys.exit(1)
 
     df = pd.read_csv(file_path)
@@ -60,6 +49,6 @@ if __name__ == "__main__":
         pipeline.fit(X_train, y_train)
 
         accuracy = pipeline.score(X_test, y_test)
-        print(f"Proses Berhasil! Akurasi Model: {accuracy}")
+        print(f"Accuracy: {accuracy}")
 
         mlflow.log_metric("accuracy", accuracy)
