@@ -1,6 +1,7 @@
 import os
 import sys
 import warnings
+from pathlib import Path
 import pandas as pd
 import numpy as np
 import mlflow
@@ -16,22 +17,26 @@ if __name__ == "__main__":
 
     default_filename = "heart_preprocesing.csv"
     file_path = default_filename
+
     if len(sys.argv) > 1:
         file_path = sys.argv[-1]
 
     if not os.path.exists(file_path):
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        alternative_path = os.path.join(script_dir, default_filename)
-        if os.path.exists(alternative_path):
-            file_path = alternative_path
+        alternative_path = Path(__file__).resolve().parent / default_filename
+        if alternative_path.exists():
+            file_path = str(alternative_path)
+
+    if not os.path.exists(file_path):
+        alternative_path = Path.cwd() / default_filename
+        if alternative_path.exists():
+            file_path = str(alternative_path)
 
     print(f"==================================================")
     print(f"Mencoba memuat dataset dari: {file_path}")
     print(f"==================================================")
 
     if not os.path.exists(file_path):
-        print(f"Error Fatal: File '{file_path}' tidak ditemukan di sistem!")
-        print("Pastikan file dataset berada di dalam folder proyek Anda.")
+        print(f"Error Fatal: File '{file_path}' tidak ditemukan!")
         sys.exit(1)
 
     df = pd.read_csv(file_path)
@@ -47,7 +52,6 @@ if __name__ == "__main__":
     mlflow.sklearn.autolog(log_models=True)
 
     with mlflow.start_run():
-        # Membungkus standarisasi data & algoritma ke dalam satu Pipeline resmi
         pipeline = Pipeline([
             ('scaler', StandardScaler()),
             ('classifier', LogisticRegression(max_iter=1000))
