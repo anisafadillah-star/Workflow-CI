@@ -15,7 +15,7 @@ mlflow.set_experiment("Heart_Disease")
 mlflow.sklearn.autolog()
 
 # Load dataset
-df = pd.read_csv("heart_preprocesing.csv")
+df = pd.read_csv("heart_preprocessing.csv")
 
 X = df.drop("target", axis=1)
 y = df["target"]
