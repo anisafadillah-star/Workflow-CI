@@ -1,14 +1,17 @@
 import mlflow
 import mlflow.sklearn
 import pandas as pd
+import joblib
 
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import Pipeline
 
 mlflow.set_tracking_uri("file:./mlruns")
 mlflow.set_experiment("Heart_Disease")
 
+# Membaca dataset
 df = pd.read_csv("heart_preprocesing.csv")
 
 X = df.drop("target", axis=1)
@@ -20,19 +23,18 @@ X_train, X_test, y_train, y_test = train_test_split(
     random_state=42
 )
 
-scaler = StandardScaler()
-
-X_train = scaler.fit_transform(X_train)
-X_test = scaler.transform(X_test)
-
 mlflow.sklearn.autolog()
 
 with mlflow.start_run():
+    full_pipeline = Pipeline([
+        ('scaler', StandardScaler()),
+        ('classifier', LogisticRegression(max_iter=1000))
+    ])
 
-    model = LogisticRegression(max_iter=1000)
+    full_pipeline.fit(X_train, y_train)
 
-    model.fit(X_train, y_train)
-
-    accuracy = model.score(X_test, y_test)
-
+    accuracy = full_pipeline.score(X_test, y_test)
     print("Accuracy:", accuracy)
+
+    joblib.dump(full_pipeline, "model.pkl")
+    print("Model pipeline sukses disimpan ke 'model.pkl'!")
