@@ -12,23 +12,23 @@ if __name__ == "__main__":
     warnings.filterwarnings("ignore")
     np.random.seed(40)
 
-    file_path = "train_pca.csv"
+    file_path = "heart_preprocesing.csv"
 
     if len(sys.argv) > 3 and os.path.exists(sys.argv[3]):
         file_path = sys.argv[3]
     else:
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        alternative_path = os.path.join(script_dir, "train_pca.csv")
+        alternative_path = os.path.join(script_dir, "heart_preprocesing.csv")
         if os.path.exists(alternative_path):
             file_path = alternative_path
 
     if not os.path.exists(file_path):
         sys.exit(1)
 
-    data = pd.read_csv(file_path)
+    df = pd.read_csv(file_path)
 
-    X = data.drop("Credit_Score", axis=1)
-    y = data["Credit_Score"]
+    X = df.drop(columns=['target'])
+    y = df['target']
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42, test_size=0.2)
     
