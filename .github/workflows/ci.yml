@@ -12,8 +12,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true # Menghilangkan warning Node.js di log Anda
-
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true 
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
@@ -30,6 +29,7 @@ jobs:
 
     - name: Fix Missing Dataset (Create Dummy CSV)
       run: |
+        # Membuat file heart_preprocesing.csv otomatis di server GitHub agar tidak FileNotFoundError
         python -c "
         import pandas as pd
         import numpy as np
