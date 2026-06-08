@@ -13,8 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-      # SOLUSI ERROR MAINTENANCE MODE: Mengizinkan penyimpanan local backend di GitHub runner
-      MLFLOW_ALLOW_FILE_STORE: true 
+      MLFLOW_ALLOW_FILE_STORE: true
 
     steps:
     - name: Checkout Code
@@ -32,6 +31,5 @@ jobs:
 
     - name: Run MLflow Project
       run: |
-        # Masuk ke folder tempat MLproject berada dan jalankan run otomatis sesuai modul
         cd MLProject
         mlflow run . --env-manager=local
