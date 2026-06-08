@@ -1,52 +1,40 @@
-import os
-import sys
-import warnings
-import pandas as pd
-import numpy as np
 import mlflow
 import mlflow.sklearn
-from sklearn.ensemble import RandomForestClassifier
+import pandas as pd
+
 from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
 
-if __name__ == "__main__":
-    warnings.filterwarnings("ignore")
-    np.random.seed(40)
+# Tracking lokal
+mlflow.set_tracking_uri("file:./mlruns")
 
-    file_path = "heart_preprocessing.csv"
+# Nama experiment
+mlflow.set_experiment("Heart_Disease")
 
-    if len(sys.argv) > 3 and os.path.exists(sys.argv[3]):
-        file_path = sys.argv[3]
-    else:
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        alternative_path = os.path.join(script_dir, "heart_preprocessing.csv")
-        if os.path.exists(alternative_path):
-            file_path = alternative_path
+# Aktifkan autolog
+mlflow.sklearn.autolog()
 
-    if not os.path.exists(file_path):
-        sys.exit(1)
+# Load dataset
+df = pd.read_csv("heart_preprocesing.csv")
 
-    df = pd.read_csv(file_path)
+X = df.drop("target", axis=1)
+y = df["target"]
 
-    X = df.drop(columns=['target'])
-    y = df['target']
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42
+)
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42, test_size=0.2)
-    
-    input_example = X_train[0:5]
-    
-    n_estimators = int(sys.argv[1]) if len(sys.argv) > 1 and sys.argv[1].isdigit() else 505
-    max_depth = int(sys.argv[2]) if len(sys.argv) > 2 and sys.argv[2].isdigit() else 37
+# Training model
+with mlflow.start_run():
 
-    mlflow.set_tracking_uri("file:./mlruns")
-    mlflow.set_experiment("Latihan Credit Scoring")
-    
-    mlflow.sklearn.autolog(log_models=True)
+    model = LogisticRegression(max_iter=1000)
 
-    with mlflow.start_run():
-        model = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth, random_state=42)
-        model.fit(X_train, y_train)
+    model.fit(X_train, y_train)
 
-        accuracy = model.score(X_test, y_test)
-        print(f"Accuracy: {accuracy}")
+    accuracy = model.score(X_test, y_test)
 
-        mlflow.log_metric("accuracy", accuracy)
+    print("Accuracy :", accuracy)
