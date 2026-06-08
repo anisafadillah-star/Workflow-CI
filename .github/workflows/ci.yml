@@ -33,5 +33,5 @@ jobs:
     - name: Run MLflow Project
       run: |
         # Masuk ke folder tempat MLproject berada dan jalankan run otomatis sesuai modul
-        cd MLProject
+        cd MLproject
         mlflow run . --env-manager=local
