@@ -1,7 +1,9 @@
-name: Heart_Disease_Training
+name: Latihan Credit Scoring
 
 conda_env: conda.yaml
 
 entry_points:
   main:
-    command: "python modelling.py"
+    parameters:
+      dataset: {type: string, default: "heart_preprocesing.csv"}
+    command: "python modelling.py {dataset}"
