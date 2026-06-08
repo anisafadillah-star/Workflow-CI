@@ -1,13 +1,14 @@
-name: latihan_credit_scoring
+name: heart_env
+
 channels:
-  - conda-forge
   - defaults
+
 dependencies:
-  - python=3.12
+  - python=3.10
   - pip
+
   - pip:
       - mlflow==2.19.0
-      - scikit-learn<=1.5.2
-      - pandas==2.2.2
-      - numpy==2.0.2
-      - matplotlib
+      - pandas
+      - scikit-learn
+      - numpy
