@@ -12,13 +12,13 @@ if __name__ == "__main__":
     warnings.filterwarnings("ignore")
     np.random.seed(40)
 
-    file_path = "heart_preprocesing.csv"
+    file_path = "heart_preprocessing.csv"
 
     if len(sys.argv) > 3 and os.path.exists(sys.argv[3]):
         file_path = sys.argv[3]
     else:
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        alternative_path = os.path.join(script_dir, "heart_preprocesing.csv")
+        alternative_path = os.path.join(script_dir, "heart_preprocessing.csv")
         if os.path.exists(alternative_path):
             file_path = alternative_path
 
