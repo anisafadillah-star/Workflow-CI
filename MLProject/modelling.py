@@ -2,7 +2,6 @@ import mlflow
 import mlflow.sklearn
 import pandas as pd
 import joblib
-
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
@@ -11,7 +10,6 @@ from sklearn.pipeline import Pipeline
 mlflow.set_tracking_uri("file:./mlruns")
 mlflow.set_experiment("Heart_Disease")
 
-# Membaca dataset
 df = pd.read_csv("heart_preprocesing.csv")
 
 X = df.drop("target", axis=1)
