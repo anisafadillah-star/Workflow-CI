@@ -17,7 +17,8 @@ if __name__ == "__main__":
     file_path = "heart_preprocesing.csv"
 
     if len(sys.argv) > 1:
-        file_path = sys.argv[-1]
+        if os.path.exists(sys.argv[-1]) and sys.argv[-1].endswith('.csv'):
+            file_path = sys.argv[-1]
 
     if not os.path.exists(file_path):
         script_dir = os.path.dirname(os.path.abspath(__file__))
